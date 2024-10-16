@@ -19,6 +19,11 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike
 
 ASSETS_DIR = Path(__file__).parent / 'assets'  # NOTE: Switch to importlib.resources later
+OUTPUT_DIR = Path(__file__).parent.parent / 'output'
+
+if not OUTPUT_DIR.exists():
+    OUTPUT_DIR.mkdir()
+
 USE_FULLSCREEN = True
 LABEL_FONT = ("Helvetica", 12)
 LABELS = [
