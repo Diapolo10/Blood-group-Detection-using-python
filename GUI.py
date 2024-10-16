@@ -98,6 +98,17 @@ class Login(tk.Frame):
         self.start(p1,"Anti A")
         self.start2()
 
+    def select_image(self, label_coordinates: tuple[int, int]) -> None:
+        path = tk.filedialog.askopenfilename()
+        with Image.open(path) as picture:
+            resized = picture.resize((300, 425), Image.ANTIALIAS)
+            image = ImageTk.PhotoImage(resized)
+            label = tk.Label(self, image=image)
+            x, y = label_coordinates
+            label.place(x=x, y=y)
+
+        if 
+
 
     def imagesel1(self):
         global v
