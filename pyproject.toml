@@ -1,0 +1,151 @@
+[build-system]
+requires = ["poetry-core>=1.2.0", "wheel",]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry]
+name = "blood-group-detection-using-python"
+version = "0.1.0"
+description = "Project for detecting blood group using image processing in Python."
+
+packages = [
+    { include = "blood_group_detection_using_python", from = "src" },
+]
+
+authors = ["Anirudh <anirudhjaishankar97@gmail.com>",]
+maintainers = []
+
+include = []
+license = "PROPRIETARY"
+readme = "README.md"
+
+repository = "https://github.com/anirudhjaishankar/Blood-group-Detection-using-python"
+
+keywords = [
+    "python3",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Typing :: Typed",
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.10.0"
+matplotlib = "^3.9.2"
+numpy = "^2.1.2"
+opencv-python = "^4.10.0.84"
+pillow = "^11.0.0"
+scikit-image = "^0.24.0"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.1"
+ruff = "0.6.9"
+
+
+[tool.poetry.urls]
+"Tracker" = "https://github.com/anirudhjaishankar/Blood-group-Detection-using-python/issues"
+
+
+[tool.ruff]
+lint.select = [
+    "A",     # Builtins
+    "ANN",   # Annotations
+    "ARG",   # Unused arguments
+    "ASYNC", # Asynchronous code
+    "B",     # Bugbear
+    "BLE",   # Blind except
+    "C4",    # Comprehensions
+    "C90",   # mccabe
+    "COM",   # Commas
+    # "CPY",   # Copyright
+    "D1",    # Undocumented public elements
+    "D2",    # Docstring conventions
+    "D3",    # Triple double quotes
+    "D4",    # Docstring text format
+    "DTZ",   # Datetimes
+    "E",     # Errors
+    "EM",    # Error messages
+    "ERA",   # Commented-out code
+    "EXE",   # Executable
+    "F",     # Pyflakes
+    "FA",    # __future__ annotations
+    "FBT",   # "Boolean trap"
+    "FIX",   # "FIXME"-comments
+    "FLY",   # F-strings
+    "FURB",  # Refurb
+    "G",     # Logging format
+    "I",     # Isort
+    "ICN",   # Import conventions
+    "INP",   # Disallow PEP-420 (Implicit namespace packages)
+    "INT",   # gettext
+    "ISC",   # Implicit str concat
+    "LOG",   # Logging
+    "N",     # PEP-8 Naming
+    "NPY",   # Numpy
+    "PERF",  # Unnecessary performance costs
+    "PGH",   # Pygrep hooks
+    "PIE",   # Unnecessary code
+    "PL",    # Pylint
+    "PT",    # Pytest
+    "PTH",   # Use Pathlib
+    "PYI",   # Stub files
+    "Q",     # Quotes
+    "RET",   # Return
+    "RUF",   # Ruff
+    "RSE",   # Raise
+    "S",     # Bandit
+    "SIM",   # Code simplification
+    "SLF",   # Private member access
+    "SLOT",  # __slots__
+    "T10",   # Debugger
+    "T20",   # Print
+    "TCH",   # Type checking
+    "TD",    # "TODO"-comments
+    "TID",   # Tidy imports
+    "TRY",   # Exception handling
+    "UP",    # Pyupgrade
+    "W",     # Warnings
+    "YTT",   # sys.version
+]
+lint.ignore = [
+    "ANN101",  # Type annotation for `self`
+    "D203",    # One blank line before class docstring
+    "D212",    # Multi-line summary first line
+    "PLR0913", # Too many arguments
+    "Q000",    # Single quotes found but double quotes preferred
+]
+line-length = 120
+show-fixes = true
+src = ["src",]
+target-version = "py310"
+
+
+[tool.ruff.lint.flake8-copyright]
+author = "Anirudh"
+
+
+[tool.ruff.lint.flake8-quotes]
+docstring-quotes = "double"
+multiline-quotes = "double"
+
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+
+[tool.ruff.lint.per-file-ignores]
+# https://beta.ruff.rs/docs/rules/
+demo.py = ['*']
+
+
+[tool.ruff.lint.pylint]
+max-args = 15
+max-branches = 20
+max-returns = 10
+max-statements = 80
+
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"

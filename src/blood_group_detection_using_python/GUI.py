@@ -1,11 +1,14 @@
 import tkinter as tk
 from enum import Flag, auto
-# from tkinter import messagebox, filedialog
+from pathlib import Path
+from tkinter import filedialog, messagebox
 
 from PIL import Image, ImageTk
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+
+ASSETS_DIR = Path(__file__).parent / 'assets'  # NOTE: Switch to importlib.resources later
 
 
 class BloodComponent(Flag):
@@ -14,8 +17,8 @@ class BloodComponent(Flag):
     PLUS = auto()
 
 q = 1
-f = 0
-v = 0
+# f = 0
+# v = 0
 p1 = ''
 p2 = ''
 p3 = ''
@@ -23,22 +26,20 @@ p4 = ''
 
 
 class Login(tk.Frame):
-    def __init__(self, master=None) -> None:
+    def __init__(self, master: tk.Tk | None = None) -> None:
         super().__init__(master)
-        self.master = master
         self.blood: BloodComponent | None = BloodComponent(0)
+        self.anti_a_img: Path | None = None
+        self.anti_b_img: Path | None = None
+        self.anti_d_img: Path | None = None
+        self.reagent_img: Path | None = None
         self.init_window()
 
     def init_window(self):
-
-        # Code Segment for Icon and title
-
         self.configure(background='powder blue')
         self.pack(fill=tk.BOTH, expand=1)
         self.master.title("Blood Group Detection System")
-        self.master.iconbitmap('./Blood.ico')
-
-        # Code segment for dropdown menu
+        self.master.iconbitmap(ASSETS_DIR / 'Blood.ico')
 
         menu = tk.Menu(self.master)
         self.master.config(menu=menu)
@@ -58,7 +59,6 @@ class Login(tk.Frame):
         stage.add_command(label="Process 6: Histogram", command=self.Histogram)
         stage.add_command(label="Process 7: Quantification", command=self.HSV_Luminance)
 
-        # Code segment for labels
         l1 = tk.Label(self, text="Reagent Anti-A", font=("Helvetica", 12))
         l2 = tk.Label(self, text="Reagent Anti-B", font=("Helvetica", 12))
         l3 = tk.Label(self, text="Reagent Anti-D", font=("Helvetica", 12))
@@ -68,11 +68,10 @@ class Login(tk.Frame):
         l3.place(x=780, y=475)
         l4.place(x=1070, y=475)
 
-        # Code segment for buttons
-        e1 = tk.Button(self, text="Choose Image", command=self.imagesel1)
-        e2 = tk.Button(self, text="Choose Image", command=self.imagesel2)
-        e3 = tk.Button(self, text="Choose Image", command=self.imagesel3)
-        e4 = tk.Button(self, text="Choose Image", command=self.imagesel4)
+        e1 = tk.Button(self, text="Choose Image", command=self.select_anti_a_image)
+        e2 = tk.Button(self, text="Choose Image", command=self.select_anti_b_image)
+        e3 = tk.Button(self, text="Choose Image", command=self.select_anti_d_image)
+        e4 = tk.Button(self, text="Choose Image", command=self.select_control_reagent_image)
         self.ep = tk.Button(self, text="Process", font=("Helvetica", 12), fg='red', relief=tk.SUNKEN)
         self.ep.place(x=650, y=575)
         e1.place(x=170, y=500)
@@ -85,122 +84,64 @@ class Login(tk.Frame):
         q = 0
         root.destroy()
 
-
     def restart(self):
         global q
         q = 1
         root.destroy()
 
-    def  message(self,q):
-        tk.messagebox.showinfo("Result",q+"Confirmed")
+    def message(self,q):
+        messagebox.showinfo("Result",q+"Confirmed")
+
+    def select_image(self, label_coordinates: tuple[int, int]) -> Path:
+        path = Path(filedialog.askopenfilename())
+        with Image.open(path) as picture:
+            resized = picture.resize((300, 425), Image.Resampling.LANCZOS)
+            image = ImageTk.PhotoImage(resized)
+            label = tk.Label(self, image=image)  # type: ignore[arg-type]
+            x, y = label_coordinates
+            label.place(x=x, y=y)
+
+        return path
+    
+    def select_anti_a_image(self) -> None:
+        self.anti_a_img = self.select_image(label_coordinates=(75, 50))
+        if not any(path is None for path in (self.anti_a_img, self.anti_b_img, self.anti_d_img, self.reagent_img)):
+            # NOTE: Work on this
+            self.ep.configure(relief=tk.RAISED, fg='green', command=self.start1)
+    
+    def select_anti_b_image(self) -> None:
+        self.anti_b_img = self.select_image(label_coordinates=(375, 50))
+        if not any(path is None for path in (self.anti_a_img, self.anti_b_img, self.anti_d_img, self.reagent_img)):
+            # NOTE: Work on this
+            self.ep.configure(relief=tk.RAISED, fg='green', command=self.start1)
+    
+    def select_anti_d_image(self) -> None:
+        self.anti_d_img = self.select_image(label_coordinates=(675, 50))
+        if not any(path is None for path in (self.anti_a_img, self.anti_b_img, self.anti_d_img, self.reagent_img)):
+            # NOTE: Work on this
+            self.ep.configure(relief=tk.RAISED, fg='green', command=self.start1)
+    
+    def select_control_reagent_image(self) -> None:
+        self.reagent_img = self.select_image(label_coordinates=(975, 50))
+        if not any(path is None for path in (self.anti_a_img, self.anti_b_img, self.anti_d_img, self.reagent_img)):
+            # NOTE: Work on this
+            self.ep.configure(relief=tk.RAISED, fg='green', command=self.start1)
 
     def start1(self):
         self.start(p1,"Anti A")
         self.start2()
 
-    def select_image(self, label_coordinates: tuple[int, int]) -> None:
-        path = tk.filedialog.askopenfilename()
-        with Image.open(path) as picture:
-            resized = picture.resize((300, 425), Image.ANTIALIAS)
-            image = ImageTk.PhotoImage(resized)
-            label = tk.Label(self, image=image)
-            x, y = label_coordinates
-            label.place(x=x, y=y)
-
-        if 
-
-
-    def imagesel1(self):
-        global v
-        v += 1
-        s = tk.filedialog.askopenfilename()
-        x = ""
-        i = len(s)-1
-        while s[i] != '/':
-            x += s[i]
-            i -= 1
-        global p1
-        p1 = x[::-1]
-        self.p = Image.open(x[::-1])
-        r = self.p.resize((300,425),Image.ANTIALIAS)
-        i = ImageTk.PhotoImage(r)
-        l = tk.Label(self, image=i)
-        l.Image = i
-        l.place(x=75, y=50)
-        if v == 4:
-            self.ep.configure(relief=tk.RAISED, fg='green', command=self.start1)
-
     def start2(self):
         self.start(p2, "Anti B")
         self.start3()
-
-
-
-    def imagesel2(self):
-        global v, p2
-        v += 1
-        s = filedialog.askopenfilename()
-        x = ""
-        i = len(s)-1
-        while s[i] != '/':
-            x += s[i]
-            i -= 1
-        p2 = x[::-1]
-        self.p = Image.open(x[::-1])
-        r = self.p.resize((300, 425), Image.ANTIALIAS)
-        i = ImageTk.PhotoImage(r)
-        l = tk.Label(self, image=i)
-        l.Image = i
-        l.place(x=375, y=50)
-        if v == 4:
-            self.ep.configure(relief=tk.RAISED, fg='green', command=self.start1)
 
     def start3(self):
         self.start(p3, "Anti D")
         self.start4()
 
-
-    def imagesel3(self):
-        global v, p3
-        v += 1
-        s = filedialog.askopenfilename()
-        x = ""
-        i = len(s)-1
-        while s[i] != '/':
-            x += s[i]
-            i -= 1
-        p3 = x[::-1]
-        self.p = Image.open(x[::-1])
-        r = self.p.resize((300,425),Image.ANTIALIAS)
-        i = ImageTk.PhotoImage(r)
-        l = Label(self, image=i)
-        l.Image = i
-        l.place(x=675, y=50)
-        if v == 4:
-            self.ep.configure(relief=RAISED, fg='green', command=self.start1)
-
     def start4(self):
         self.start(p4, "Control")
         self.check()
-
-    def imagesel4(self):
-        global v, p4
-        v += 1
-        s = filedialog.askopenfilename()
-        x = ""
-        i = len(s)-1
-        while s[i] != '/':
-            x += s[i]
-            i -= 1
-        p4 = x[::-1]
-        self.p = Image.open(x[::-1])
-        r = self.p.resize((300, 425), Image.ANTIALIAS)
-        i = ImageTk.PhotoImage(r)
-        l = Label(self, image=i)
-        l.Image = i
-        l.place(x=975, y=50)
-        if v == 4:
-            self.ep.configure(relief=RAISED, fg='green', command=self.start1)
 
     def extract_green_plane(self, p,r):  # Extracting the Green plane
         img = cv2.imread(p)
@@ -220,7 +161,7 @@ class Login(tk.Frame):
 
     def fill_holes(self,r):  # Morphology: fill holes
         gi = cv2.imread('p3'+r+'.png', cv2.IMREAD_GRAYSCALE)
-        th, gi_th = cv2.threshold(gi, 220, 255, cv2.THRESH_BINARY_INV)
+        _, gi_th = cv2.threshold(gi, 220, 255, cv2.THRESH_BINARY_INV)
         gi_floodFill=gi_th.copy()
         h, w = gi_th.shape[:2]
         mask = np.zeros((h+2, w+2), np.uint8)
@@ -246,7 +187,7 @@ class Login(tk.Frame):
         n = 0
         s = 0
         ss = 0
-        for x, y in enumerate(hist):
+        for y in hist:
             if y > max:
                 max = y
             if y < min:
@@ -255,15 +196,12 @@ class Login(tk.Frame):
             n += 1
 
         mean = s/n
-        for x, y in enumerate(hist):
+        for y in hist:
             ss += (y-mean)**2
         ss /= n
         sd = abs(ss)**0.5
         print(r,"-",sd,"\n")
-        if sd < 580:
-            return 1
-        else:
-            return 0
+        return sd < 580
 
 
     def start(self, p,r):
@@ -286,7 +224,7 @@ class Login(tk.Frame):
                 blood = None
             self.blood = blood
 
-    def check(self):
+    def check(self) -> None:
         if self.blood is None:
             self.message("Invalid")
             return
@@ -305,7 +243,7 @@ class Login(tk.Frame):
         self.message(message)
 
 
-    def gp(self):
+    def gp(self) -> None:
         im1 = cv2.imread('p1Anti A.png')
         cv2.imshow('Anti-A',im1)
         im2 = cv2.imread('p1Anti B.png')
@@ -317,7 +255,7 @@ class Login(tk.Frame):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    def autothresh(self):
+    def autothresh(self) -> None:
         im1 = cv2.imread('p2Anti A.png')
         cv2.imshow('Anti-A', im1)
         im2 = cv2.imread('p2Anti B.png')
@@ -405,13 +343,10 @@ class Login(tk.Frame):
 
 
 
-
-while(1):
-    if q == 0:
-        break
-    else:
-        root = Tk()
-        root.attributes("-fullscreen",True)
+if __name__ == '__main__':
+    while q == 0:
+        root = tk.Tk()
+        root.attributes("-fullscreen", True)
         app = Login(root)
         root.bind("<Escape>", app.stp_full)
         root.mainloop()
