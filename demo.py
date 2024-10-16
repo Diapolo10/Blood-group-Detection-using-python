@@ -9,7 +9,7 @@ import numpy as np
 
 
 ## INPUT IMAGE
-img1 = ski.imread("E:\Blood group\s.jpg")
+img1 = ski.imread("./s.jpg")
 
 
 ##Color Plane Extraction: RGB Green Plane
