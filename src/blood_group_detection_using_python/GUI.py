@@ -183,24 +183,24 @@ class Login(tk.Frame):
         """Lorem Ipsum."""
         img = cv2.imread(image_path)  # type: ignore[call-overload]
         gi = img[:, :, 1]
-        cv2.imwrite(f"p1{experiment_title}.png", gi)
+        cv2.imwrite(OUTPUT_DIR / f"p1{experiment_title}.png", gi)  # type: ignore[call-overload]
         return gi
 
     def obtain_threshold(self, image_path: Path, experiment_title: str) -> None:  # Obtaining the threshold
         """Lorem Ipsum."""
         gi = self.extract_green_plane(image_path, experiment_title)
         _, th = cv2.threshold(gi, 0, 255, cv2.THRESH_OTSU)  # type: ignore[call-overload]
-        cv2.imwrite(f"p2{experiment_title}.png", th)
+        cv2.imwrite(OUTPUT_DIR / f"p2{experiment_title}.png", th)  # type: ignore[call-overload]
 
     def obtain_black_image(self, experiment_title: str) -> None:  # Obtaining Ni black image
         """Lorem Ipsum."""
-        img = cv2.imread(f'p2{experiment_title}.png', 0)
+        img = cv2.imread(OUTPUT_DIR / f'p2{experiment_title}.png', 0)  # type: ignore[call-overload]
         th4 = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 14)
-        cv2.imwrite(f"p3{experiment_title}.png", th4)
+        cv2.imwrite(OUTPUT_DIR / f"p3{experiment_title}.png", th4)  # type: ignore[call-overload]
 
     def fill_holes(self, experiment_title: str) -> None:  # Morphology: fill holes
         """Lorem Ipsum."""
-        gi = cv2.imread(f'p3{experiment_title}.png', cv2.IMREAD_GRAYSCALE)
+        gi = cv2.imread(OUTPUT_DIR / f'p3{experiment_title}.png', cv2.IMREAD_GRAYSCALE)  # type: ignore[call-overload]
         _, gi_th = cv2.threshold(gi, 220, 255, cv2.THRESH_BINARY_INV)
         gi_flood_fill = gi_th.copy()
         h, w = gi_th.shape[:2]
@@ -208,20 +208,20 @@ class Login(tk.Frame):
         cv2.floodFill(gi_flood_fill, mask, (0, 0), 255)  # type: ignore[call-overload]
         gi_flood_fill_inv = cv2.bitwise_not(gi_flood_fill)
         gi_out = gi_th | gi_flood_fill_inv  # type: ignore[operator]
-        cv2.imwrite(f'p4{experiment_title}.png', gi_out)
+        cv2.imwrite(OUTPUT_DIR / f'p4{experiment_title}.png', gi_out)  # type: ignore[call-overload]
 
     def eliminate_small_objects(self, experiment_title: str) -> None:  # Morphing To eliminate small objects
         """Lorem Ipsum."""
-        img = cv2.imread(f'p4{experiment_title}.png')
+        img = cv2.imread(OUTPUT_DIR / f'p4{experiment_title}.png')  # type: ignore[call-overload]
         kernel = np.ones((5, 5), np.uint8)
         open_ = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
         close = cv2.morphologyEx(open_, cv2.MORPH_CLOSE, kernel)
-        cv2.imwrite(f'p5{experiment_title}.png', close)
+        cv2.imwrite(OUTPUT_DIR / f'p5{experiment_title}.png', close)  # type: ignore[call-overload]
 
     def histogram(self, experiment_title: str) -> bool:
         """Histogram."""
-        img = cv2.imread(f'p5{experiment_title}.png', 0)
-        img2 = cv2.imread(f'p1{experiment_title}.png', 0)
+        img = cv2.imread(OUTPUT_DIR / f'p5{experiment_title}.png', 0)  # type: ignore[call-overload]
+        img2 = cv2.imread(OUTPUT_DIR / f'p1{experiment_title}.png', 0)  # type: ignore[call-overload]
         mask = np.ones(img.shape[:2], np.uint8)
         hist = cv2.calcHist([img2], [0], mask, [256], [0, 256])
         n = len(hist)
@@ -300,75 +300,75 @@ class Login(tk.Frame):
 
 def gp() -> None:
     """I don't know what this does."""
-    im1 = cv2.imread('p1Anti A.png')
+    im1 = cv2.imread(OUTPUT_DIR / 'p1Anti A.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-A',im1)
-    im2 = cv2.imread('p1Anti B.png')
+    im2 = cv2.imread(OUTPUT_DIR / 'p1Anti B.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-B', im2)
-    im3 = cv2.imread('p1Anti D.png')
+    im3 = cv2.imread(OUTPUT_DIR / 'p1Anti D.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-D', im3)
-    im4 = cv2.imread('p1Control.png')
+    im4 = cv2.imread(OUTPUT_DIR / 'p1Control.png')  # type: ignore[call-overload]
     cv2.imshow('Control', im4)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def autothresh() -> None:
     """I don't know what this does."""
-    im1 = cv2.imread('p2Anti A.png')
+    im1 = cv2.imread(OUTPUT_DIR / 'p2Anti A.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-A', im1)
-    im2 = cv2.imread('p2Anti B.png')
+    im2 = cv2.imread(OUTPUT_DIR / 'p2Anti B.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-B', im2)
-    im3 = cv2.imread('p2Anti D.png')
+    im3 = cv2.imread(OUTPUT_DIR / 'p2Anti D.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-D', im3)
-    im4 = cv2.imread('p2Control.png')
+    im4 = cv2.imread(OUTPUT_DIR / 'p2Control.png')  # type: ignore[call-overload]
     cv2.imshow('Control', im4)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def adapthresh() -> None:
     """I don't know what this does."""
-    im1 = cv2.imread('p3Anti A.png')
+    im1 = cv2.imread(OUTPUT_DIR / 'p3Anti A.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-A', im1)
-    im2 = cv2.imread('p3Anti B.png')
+    im2 = cv2.imread(OUTPUT_DIR / 'p3Anti B.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-B', im2)
-    im3 = cv2.imread('p3Anti D.png')
+    im3 = cv2.imread(OUTPUT_DIR / 'p3Anti D.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-D', im3)
-    im4 = cv2.imread('p3Control.png')
+    im4 = cv2.imread(OUTPUT_DIR / 'p3Control.png')  # type: ignore[call-overload]
     cv2.imshow('Control', im4)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def fill_holes() -> None:
     """I don't know what this does."""
-    im1 = cv2.imread('p4Anti A.png')
+    im1 = cv2.imread(OUTPUT_DIR / 'p4Anti A.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-A', im1)
-    im2 = cv2.imread('p4Anti B.png')
+    im2 = cv2.imread(OUTPUT_DIR / 'p4Anti B.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-B', im2)
-    im3 = cv2.imread('p4Anti D.png')
+    im3 = cv2.imread(OUTPUT_DIR / 'p4Anti D.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-D', im3)
-    im4 = cv2.imread('p4Control.png')
+    im4 = cv2.imread(OUTPUT_DIR / 'p4Control.png')  # type: ignore[call-overload]
     cv2.imshow('Control', im4)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def remove_small_objects() -> None:
     """I don't know what this does."""
-    im1 = cv2.imread('p5Anti A.png')
+    im1 = cv2.imread(OUTPUT_DIR / 'p5Anti A.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-A', im1)
-    im2 = cv2.imread('p5Anti B.png')
+    im2 = cv2.imread(OUTPUT_DIR / 'p5Anti B.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-B', im2)
-    im3 = cv2.imread('p5Anti D.png')
+    im3 = cv2.imread(OUTPUT_DIR / 'p5Anti D.png')  # type: ignore[call-overload]
     cv2.imshow('Anti-D', im3)
-    im4 = cv2.imread('p5Control.png')
+    im4 = cv2.imread(OUTPUT_DIR / 'p5Control.png')  # type: ignore[call-overload]
     cv2.imshow('Control', im4)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
 def histogram() -> None:
     """I don't know what this does."""
-    img1 = cv2.imread('p5Anti A.png', 0)
-    img2 = cv2.imread('p5Anti B.png', 0)
-    img3 = cv2.imread('p5Anti D.png', 0)
-    img4 = cv2.imread('p5Control.png', 0)
+    img1 = cv2.imread(OUTPUT_DIR / 'p5Anti A.png', 0)  # type: ignore[call-overload]
+    img2 = cv2.imread(OUTPUT_DIR / 'p5Anti B.png', 0)  # type: ignore[call-overload]
+    img3 = cv2.imread(OUTPUT_DIR / 'p5Anti D.png', 0)  # type: ignore[call-overload]
+    img4 = cv2.imread(OUTPUT_DIR / 'p5Control.png', 0)  # type: ignore[call-overload]
     plt.hist(img1.ravel(), 256, [0, 256])  # type: ignore[arg-type]
     plt.show()
     plt.hist(img2.ravel(), 256, [0, 256])  # type: ignore[arg-type]
